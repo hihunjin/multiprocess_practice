@@ -25,7 +25,8 @@ debug_print("Registering with manager")
 MyManager.register('get_task_queue')
 MyManager.register('get_result_queue')
 MyManager.register('get_processor_info')
-MyManager.register('get_processor_info_dict')  # Register the new method
+MyManager.register('get_processor_info_dict')
+MyManager.register('get_processor_info_as_string')  # Register the new method
 MyManager.register('update_processor_info')
 
 def get_manager():
@@ -179,18 +180,38 @@ def get_processor_info():
         # Get the manager
         manager = get_manager()
         
-        # Use the method that returns a JSON string
-        json_str = manager.get_processor_info_dict()
-        debug_print(f"Got processor info as JSON string: {type(json_str)}, length: {len(json_str) if isinstance(json_str, str) else 'unknown'}")
-        
-        # Parse the JSON string
+        # Use the method that returns a simple string
         try:
-            info_dict = json.loads(json_str)
-            debug_print(f"Successfully parsed JSON string into dictionary with {len(info_dict)} keys")
+            # Get the proxy object
+            proxy_obj = manager.get_processor_info_as_string()
+            debug_print(f"Got proxy object: {type(proxy_obj)}")
+            
+            # Convert proxy to string - this is the critical step
+            if hasattr(proxy_obj, '_getvalue'):
+                # If it has _getvalue method, use it
+                json_str = proxy_obj._getvalue()
+                debug_print(f"Got value using _getvalue(): {type(json_str)}")
+            else:
+                # Otherwise try direct string conversion
+                json_str = str(proxy_obj)
+                debug_print(f"Converted to string using str(): {type(json_str)}")
+            
+            # Make sure it's a valid JSON string
+            if not json_str.startswith('{') and not json_str.startswith('['):
+                debug_print(f"Warning: Not a valid JSON string: {json_str[:100]}")
+                # Create a simple fallback dictionary
+                info_dict = {
+                    "error": "Invalid JSON string from server",
+                    "raw_value": json_str[:100] + "..." if len(json_str) > 100 else json_str
+                }
+            else:
+                # Parse the JSON string
+                info_dict = json.loads(json_str)
+                debug_print(f"Successfully parsed JSON string into dictionary with {len(info_dict)} keys")
         except Exception as e:
-            debug_print(f"Error parsing JSON string: {e}")
+            debug_print(f"Error getting or parsing processor info: {e}")
             debug_print(traceback.format_exc())
-            info_dict = {"error": "Could not parse processor info JSON"}
+            info_dict = {"error": f"Could not get processor info: {str(e)}"}
         
         # Add current API server info
         info_dict["current_api_server"] = f"{hostname}:{process_id}"
@@ -200,6 +221,31 @@ def get_processor_info():
         debug_print(f"Error in get_processor_info: {e}")
         debug_print(traceback.format_exc())
         raise HTTPException(status_code=500, detail=f"Error getting processor info: {str(e)}")
+
+@app.get("/counter-value")
+def get_counter_value():
+    """Simple endpoint that returns just the counter value as an integer"""
+    debug_print(f"counter-value endpoint called on {hostname}:{process_id}")
+    try:
+        # Use the same process_task function that the /counter endpoint uses
+        # This ensures we get the actual counter value from a worker process
+        result = process_task("get")
+        
+        # Extract just the counter value
+        counter_value = result.get("counter", 0)
+        debug_print(f"Got counter value: {counter_value}")
+        
+        # Return just the counter value in a simple format
+        return {"counter": counter_value}
+    except HTTPException as e:
+        # If we got a timeout or other HTTP exception, return 0 with an error
+        debug_print(f"HTTP error in get_counter_value: {e.detail}")
+        return {"counter": 0, "error": e.detail}
+    except Exception as e:
+        # For any other error, also return 0 with the error message
+        debug_print(f"Error in get_counter_value: {e}")
+        debug_print(traceback.format_exc())
+        return {"counter": 0, "error": str(e)}
 
 if __name__ == "__main__":
     debug_print("Starting FastAPI server")

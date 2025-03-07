@@ -138,20 +138,20 @@ def test_mixed_concurrent(num_each=5, max_workers=15):
     print(f"\n[{timestamp()}] === Testing Mixed Concurrent Requests ===")
     
     # Create a list of (endpoint, request_id) tuples
-    requests = []
+    _requests = []
     for i in range(num_each):
-        requests.append(("increment", f"inc-{i+1}"))
-        requests.append(("decrement", f"dec-{i+1}"))
-        requests.append(("counter", f"get-{i+1}"))
+        _requests.append(("increment", f"inc-{i+1}"))
+        _requests.append(("decrement", f"dec-{i+1}"))
+        _requests.append(("counter", f"get-{i+1}"))
     
-    print(f"[{timestamp()}] Starting mixed test with {len(requests)} total requests using {max_workers} workers")
+    print(f"[{timestamp()}] Starting mixed test with {len(_requests)} total _requests using {max_workers} workers")
     
-    # Use ThreadPoolExecutor to run requests concurrently
+    # Use ThreadPoolExecutor to run _requests concurrently
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # Submit all requests
+        # Submit all _requests
         future_to_req = {
             executor.submit(make_request, endpoint, request_id): (endpoint, request_id)
-            for endpoint, request_id in requests
+            for endpoint, request_id in _requests
         }
         
         # Collect results as they complete
@@ -184,7 +184,7 @@ def test_mixed_concurrent(num_each=5, max_workers=15):
     
     # Check final counter value
     try:
-        response = requests.get(f"{BASE_URL}/counter")
+        response = requests.get(f"{BASE_URL}/counter-value")
         if response.status_code == 200:
             final_counter = response.json()["counter"]
             print(f"  Final Counter Value: {final_counter}")

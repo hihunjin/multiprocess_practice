@@ -80,6 +80,48 @@ def update_processor_info(key, value):
     processor_info[key] = value
     return True
 
+def get_processor_info_as_string():
+    caller_id = f"{hostname}:{os.getpid()}"
+    debug_print(f"get_processor_info_as_string called by {caller_id}")
+    
+    # Create a simple dictionary with basic information
+    simple_info = {
+        "server_hostname": hostname,
+        "server_pid": process_id,
+        "counter_value": counter.value,
+        "num_workers": len(list(processor_info.get('workers', []))),
+        "worker_processes": [str(w) for w in list(processor_info.get('workers', []))],
+        "last_increment": str(processor_info.get('last_increment', 'None')),
+        "last_decrement": str(processor_info.get('last_decrement', 'None')),
+        "timestamp": time.strftime('%H:%M:%S')
+    }
+    
+    # Add task information
+    tasks = {}
+    for key in processor_info.keys():
+        if key.startswith('task_'):
+            tasks[key] = str(processor_info[key])
+    simple_info["tasks"] = tasks
+    
+    # Add API server information
+    api_servers = {}
+    for key in processor_info.keys():
+        if key.startswith('api_server_'):
+            api_servers[key] = str(processor_info[key])
+    simple_info["api_servers"] = api_servers
+    
+    # Convert to JSON string - this should be safe since we're using only basic types
+    try:
+        json_str = json.dumps(simple_info)
+        debug_print(f"Created simple JSON string with {len(json_str)} chars")
+        # Return the actual string value, not a proxy
+        return json_str
+    except Exception as e:
+        debug_print(f"Error creating JSON string: {e}")
+        debug_print(traceback.format_exc())
+        # Return a hardcoded error string
+        return '{"error": "Failed to create processor info string"}'
+
 class SharedDictManager:
     def __init__(self):
         self.process_id = os.getpid()
@@ -201,6 +243,7 @@ if __name__ == "__main__":
     MyManager.register('get_result_queue', callable=get_result_queue)
     MyManager.register('get_processor_info', callable=get_processor_info)
     MyManager.register('get_processor_info_dict', callable=get_processor_info_dict)
+    MyManager.register('get_processor_info_as_string', callable=get_processor_info_as_string)
     MyManager.register('update_processor_info', callable=update_processor_info)
     
     # Create the manager server
