@@ -5,6 +5,8 @@ import time
 class SharedDictManager:
     def __init__(self):
         self.shared_dict = {}
+
+        time.sleep(3)
         
     def get_counter(self):
         return self.shared_dict.get("counter", 0)
