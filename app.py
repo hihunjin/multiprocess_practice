@@ -26,6 +26,17 @@ def increment():
     # Return updated counter value
     return {"counter": new_value}
 
+@app.get("/decrement")
+def decrement():
+    manager = get_manager()
+    shared_dict_manager = manager.get_shared_dict_manager()
+    
+    # Decrement counter using the manager's method (includes 3-second pause)
+    new_value = shared_dict_manager.decrement_counter()
+    
+    # Return updated counter value
+    return {"counter": new_value}
+
 
 if __name__ == "__main__":
     import uvicorn

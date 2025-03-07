@@ -1,5 +1,6 @@
 from multiprocessing.managers import BaseManager
 import multiprocessing
+import time
 
 class SharedDictManager:
     def __init__(self):
@@ -12,6 +13,19 @@ class SharedDictManager:
         if "counter" not in self.shared_dict:
             self.shared_dict["counter"] = 0
         self.shared_dict["counter"] += 1
+        return self.shared_dict["counter"]
+        
+    def decrement_counter(self):
+        # Pause for 3 seconds
+        time.sleep(3)
+        
+        if "counter" not in self.shared_dict:
+            self.shared_dict["counter"] = 0
+        else:
+            # Only decrement if counter is greater than 0
+            if self.shared_dict["counter"] > 0:
+                self.shared_dict["counter"] -= 1
+                
         return self.shared_dict["counter"]
 
 class MyManager(BaseManager):
