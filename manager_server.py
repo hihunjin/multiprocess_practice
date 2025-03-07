@@ -6,6 +6,7 @@ import sys
 import traceback
 import socket
 import queue
+import json
 
 # Set up debug printing
 def debug_print(message):
@@ -46,6 +47,32 @@ def get_processor_info():
     caller_id = f"{hostname}:{os.getpid()}"
     debug_print(f"get_processor_info called by {caller_id}")
     return processor_info
+
+def get_processor_info_dict():
+    caller_id = f"{hostname}:{os.getpid()}"
+    debug_print(f"get_processor_info_dict called by {caller_id}")
+    # Convert the manager.dict to a regular dictionary
+    result = {}
+    for key in processor_info.keys():
+        try:
+            value = processor_info[key]
+            # Handle special case for lists
+            if isinstance(value, list) or hasattr(value, '__iter__') and not isinstance(value, (str, dict)):
+                result[key] = list(value)
+            else:
+                result[key] = value
+        except Exception as e:
+            debug_print(f"Error copying key {key}: {e}")
+            result[key] = f"Error: {str(e)}"
+    
+    # Convert to string representation
+    try:
+        result_str = json.dumps(result)
+        debug_print(f"Converted processor info to JSON string: {len(result_str)} chars")
+        return result_str
+    except Exception as e:
+        debug_print(f"Error converting to JSON: {e}")
+        return json.dumps({"error": "Failed to serialize processor info"})
 
 def update_processor_info(key, value):
     caller_id = f"{hostname}:{os.getpid()}"
@@ -173,6 +200,7 @@ if __name__ == "__main__":
     MyManager.register('get_task_queue', callable=get_task_queue)
     MyManager.register('get_result_queue', callable=get_result_queue)
     MyManager.register('get_processor_info', callable=get_processor_info)
+    MyManager.register('get_processor_info_dict', callable=get_processor_info_dict)
     MyManager.register('update_processor_info', callable=update_processor_info)
     
     # Create the manager server
@@ -189,7 +217,7 @@ if __name__ == "__main__":
         sys.exit(1)
     
     # Number of worker processes
-    num_workers = 3
+    num_workers = 20
     debug_print(f"Creating {num_workers} worker processes")
     
     # Create and start worker processes

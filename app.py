@@ -6,6 +6,7 @@ import traceback
 import socket
 import os
 import queue
+import json
 
 # Set up debug printing
 def debug_print(message):
@@ -24,7 +25,8 @@ debug_print("Registering with manager")
 MyManager.register('get_task_queue')
 MyManager.register('get_result_queue')
 MyManager.register('get_processor_info')
-MyManager.register('update_processor_info')  # Register the new method
+MyManager.register('get_processor_info_dict')  # Register the new method
+MyManager.register('update_processor_info')
 
 def get_manager():
     debug_print(f"get_manager called by {hostname}:{process_id}")
@@ -174,20 +176,24 @@ def get_counter():
 def get_processor_info():
     debug_print(f"processor-info endpoint called on {hostname}:{process_id}")
     try:
-        # Get the manager and processor info
+        # Get the manager
         manager = get_manager()
-        processor_info = manager.get_processor_info()
         
-        # Convert to a regular dictionary for JSON serialization
-        info_dict = dict(processor_info)
+        # Use the method that returns a JSON string
+        json_str = manager.get_processor_info_dict()
+        debug_print(f"Got processor info as JSON string: {type(json_str)}, length: {len(json_str) if isinstance(json_str, str) else 'unknown'}")
+        
+        # Parse the JSON string
+        try:
+            info_dict = json.loads(json_str)
+            debug_print(f"Successfully parsed JSON string into dictionary with {len(info_dict)} keys")
+        except Exception as e:
+            debug_print(f"Error parsing JSON string: {e}")
+            debug_print(traceback.format_exc())
+            info_dict = {"error": "Could not parse processor info JSON"}
         
         # Add current API server info
         info_dict["current_api_server"] = f"{hostname}:{process_id}"
-        
-        # Convert any non-serializable items
-        for key, value in info_dict.items():
-            if hasattr(value, '__iter__') and not isinstance(value, (str, dict)):
-                info_dict[key] = list(value)
         
         return info_dict
     except Exception as e:
