@@ -1,0 +1,127 @@
+root@instance-6543-0:/data/private/dev/multiprocess_practice/ray_serve# python test_ray.py 
+[06:55:17.196] Starting Ray Serve tests...
+[06:55:17.207] Ray Serve is running. Initial state: {'shared_counter': 1}
+
+==================================================
+Running 10 sequential predict tests
+==================================================
+[06:55:17.207] Testing predict with x=1
+[06:55:17.214] Predict result: {"input": 1, "gpu_sum": -2059.2734375, "shared_counter": 2}, time: 0.006s
+[06:55:17.214] Testing state endpoint
+[06:55:17.218] State result: {"shared_counter": 2}, time: 0.005s
+[06:55:17.719] Testing predict with x=2
+[06:55:17.727] Predict result: {"input": 2, "gpu_sum": -4118.546875, "shared_counter": 3}, time: 0.008s
+[06:55:17.727] Testing state endpoint
+[06:55:17.732] State result: {"shared_counter": 3}, time: 0.005s
+[06:55:18.232] Testing predict with x=3
+[06:55:18.241] Predict result: {"input": 3, "gpu_sum": -6177.81982421875, "shared_counter": 4}, time: 0.008s
+[06:55:18.241] Testing state endpoint
+[06:55:18.246] State result: {"shared_counter": 4}, time: 0.005s
+[06:55:18.747] Testing predict with x=4
+[06:55:18.755] Predict result: {"input": 4, "gpu_sum": -8237.09375, "shared_counter": 5}, time: 0.008s
+[06:55:18.755] Testing state endpoint
+[06:55:18.760] State result: {"shared_counter": 5}, time: 0.005s
+[06:55:19.261] Testing predict with x=5
+[06:55:19.269] Predict result: {"input": 5, "gpu_sum": -10296.3681640625, "shared_counter": 6}, time: 0.008s
+[06:55:19.269] Testing state endpoint
+[06:55:19.274] State result: {"shared_counter": 6}, time: 0.005s
+[06:55:19.774] Testing predict with x=6
+[06:55:19.783] Predict result: {"input": 6, "gpu_sum": -12355.6396484375, "shared_counter": 7}, time: 0.009s
+[06:55:19.783] Testing state endpoint
+[06:55:19.788] State result: {"shared_counter": 7}, time: 0.005s
+[06:55:20.288] Testing predict with x=7
+[06:55:20.297] Predict result: {"input": 7, "gpu_sum": -14414.9130859375, "shared_counter": 8}, time: 0.009s
+[06:55:20.297] Testing state endpoint
+[06:55:20.302] State result: {"shared_counter": 8}, time: 0.005s
+[06:55:20.803] Testing predict with x=8
+[06:55:20.810] Predict result: {"input": 8, "gpu_sum": -16474.1875, "shared_counter": 9}, time: 0.007s
+[06:55:20.810] Testing state endpoint
+[06:55:20.815] State result: {"shared_counter": 9}, time: 0.005s
+[06:55:21.316] Testing predict with x=9
+[06:55:21.324] Predict result: {"input": 9, "gpu_sum": -18533.4609375, "shared_counter": 10}, time: 0.008s
+[06:55:21.324] Testing state endpoint
+[06:55:21.329] State result: {"shared_counter": 10}, time: 0.005s
+[06:55:21.829] Testing predict with x=10
+[06:55:21.838] Predict result: {"input": 10, "gpu_sum": -20592.736328125, "shared_counter": 11}, time: 0.008s
+[06:55:21.838] Testing state endpoint
+[06:55:21.844] State result: {"shared_counter": 11}, time: 0.005s
+Plot saved to plots/sequential_predict.png
+
+==================================================
+Running 20 concurrent predict tests with 10 workers
+==================================================
+[06:55:22.570] Testing predict with x=1
+[06:55:22.570] Testing predict with x=2
+[06:55:22.572] Testing predict with x=3
+[06:55:22.573] Testing predict with x=4
+[06:55:22.573] Testing predict with x=5
+[06:55:22.574] Testing predict with x=6
+[06:55:22.576] Testing predict with x=7
+[06:55:22.576] Testing predict with x=8
+[06:55:22.577] Testing predict with x=9
+[06:55:22.578] Testing predict with x=10
+[06:55:22.592] Predict result: {"input": 2, "gpu_sum": -4118.546875, "shared_counter": 12}, time: 0.022s
+[06:55:22.592] Testing predict with x=11
+[06:55:22.593] Predict result: {"input": 1, "gpu_sum": -2059.2734375, "shared_counter": 13}, time: 0.023s
+[06:55:22.593] Testing predict with x=12
+[06:55:22.596] Predict result: {"input": 3, "gpu_sum": -6177.81982421875, "shared_counter": 14}, time: 0.024s
+[06:55:22.596] Testing predict with x=13
+[06:55:22.597] Predict result: {"input": 4, "gpu_sum": -8237.09375, "shared_counter": 15}, time: 0.024s
+[06:55:22.597] Testing predict with x=14
+[06:55:22.597] Predict result: {"input": 5, "gpu_sum": -10296.3681640625, "shared_counter": 16}, time: 0.024s
+[06:55:22.598] Testing predict with x=15
+[06:55:22.653] Predict result: {"input": 6, "gpu_sum": -12355.6396484375, "shared_counter": 17}, time: 0.079s
+[06:55:22.654] Testing predict with x=16
+[06:55:22.655] Predict result: {"input": 7, "gpu_sum": -14414.9130859375, "shared_counter": 19}, time: 0.079s
+[06:55:22.655] Predict result: {"input": 8, "gpu_sum": -16474.1875, "shared_counter": 18}, time: 0.079s
+[06:55:22.656] Predict result: {"input": 9, "gpu_sum": -18533.4609375, "shared_counter": 20}, time: 0.079s
+[06:55:22.655] Predict result: {"input": 10, "gpu_sum": -20592.736328125, "shared_counter": 21}, time: 0.077s
+[06:55:22.656] Testing predict with x=18
+[06:55:22.656] Testing predict with x=19
+[06:55:22.656] Testing predict with x=17
+[06:55:22.656] Testing predict with x=20
+[06:55:22.712] Predict result: {"input": 11, "gpu_sum": -22652.0078125, "shared_counter": 22}, time: 0.120s
+[06:55:22.714] Predict result: {"input": 13, "gpu_sum": -26770.5546875, "shared_counter": 23}, time: 0.118s
+[06:55:22.714] Predict result: {"input": 12, "gpu_sum": -24711.279296875, "shared_counter": 24}, time: 0.121s
+[06:55:22.715] Predict result: {"input": 14, "gpu_sum": -28829.826171875, "shared_counter": 25}, time: 0.118s
+[06:55:22.715] Predict result: {"input": 15, "gpu_sum": -30889.099609375, "shared_counter": 26}, time: 0.117s
+[06:55:22.772] Predict result: {"input": 16, "gpu_sum": -32948.375, "shared_counter": 27}, time: 0.119s
+[06:55:22.773] Predict result: {"input": 18, "gpu_sum": -37066.921875, "shared_counter": 28}, time: 0.116s
+[06:55:22.773] Predict result: {"input": 19, "gpu_sum": -39126.1875, "shared_counter": 29}, time: 0.117s
+[06:55:22.774] Predict result: {"input": 20, "gpu_sum": -41185.47265625, "shared_counter": 30}, time: 0.117s
+[06:55:22.775] Predict result: {"input": 17, "gpu_sum": -35007.6484375, "shared_counter": 31}, time: 0.119s
+[06:55:22.776] Testing state endpoint
+[06:55:22.781] State result: {"shared_counter": 31}, time: 0.005s
+Plot saved to plots/concurrent_predict.png
+
+==================================================
+Testing GPU scaling with inputs from 1 to 1000
+==================================================
+[06:55:23.026] Testing predict with x=1
+[06:55:23.033] Predict result: {"input": 1, "gpu_sum": -2059.2734375, "shared_counter": 32}, time: 0.007s
+[06:55:24.034] Testing predict with x=112
+[06:55:24.043] Predict result: {"input": 112, "gpu_sum": -230638.609375, "shared_counter": 33}, time: 0.008s
+[06:55:25.044] Testing predict with x=223
+[06:55:25.052] Predict result: {"input": 223, "gpu_sum": -459218.0, "shared_counter": 34}, time: 0.008s
+[06:55:26.052] Testing predict with x=334
+[06:55:26.062] Predict result: {"input": 334, "gpu_sum": -687797.3125, "shared_counter": 35}, time: 0.009s
+[06:55:27.063] Testing predict with x=445
+[06:55:27.071] Predict result: {"input": 445, "gpu_sum": -916376.6875, "shared_counter": 36}, time: 0.008s
+[06:55:28.072] Testing predict with x=556
+[06:55:28.080] Predict result: {"input": 556, "gpu_sum": -1144956.0, "shared_counter": 37}, time: 0.008s
+[06:55:29.082] Testing predict with x=667
+[06:55:29.092] Predict result: {"input": 667, "gpu_sum": -1373535.375, "shared_counter": 38}, time: 0.010s
+[06:55:30.093] Testing predict with x=778
+[06:55:30.101] Predict result: {"input": 778, "gpu_sum": -1602114.5, "shared_counter": 39}, time: 0.008s
+[06:55:31.103] Testing predict with x=889
+[06:55:31.110] Predict result: {"input": 889, "gpu_sum": -1830694.25, "shared_counter": 40}, time: 0.008s
+[06:55:32.111] Testing predict with x=1000
+[06:55:32.120] Predict result: {"input": 1000, "gpu_sum": -2059273.125, "shared_counter": 41}, time: 0.009s
+Plot saved to plots/gpu_scaling.png
+[06:55:33.349] Testing state endpoint
+[06:55:33.357] State result: {"shared_counter": 41}, time: 0.008s
+
+==================================================
+All tests completed!
+Final shared counter value: 41
+==================================================
